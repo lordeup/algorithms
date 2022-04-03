@@ -17,6 +17,7 @@ private:
 	void AddInt(int index_begin, int index_end, long value); // прибавление к каждому из элементов Ai, Ai+1, Е Aj   величины d;
 	void Update(int index_begin, int index_end, long value); // присвоение  каждому  из  элементов  Ai, Ai+1, Е Aj  значени€ v;
 	void Rmq(int index_begin, int index_end); // нахождение минимума из элементов Ai, Ai+1, Е Aj.
+	std::vector<int> GetNumbersFromStream(std::istringstream& iss);
 
 private:
 	std::istream& m_input;

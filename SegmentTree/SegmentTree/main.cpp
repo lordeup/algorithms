@@ -20,33 +20,30 @@ std::vector<int> getArr(std::string line, int n)
 
 int main(int argc, char* argv[])
 {
-	int parametersNumber = argc;
-
-	if (parametersNumber != 2)
+	if (argc != 3)
 	{
-		std::cout << ERROR_INVALID_ARGUMENTS << std::endl;
+		std::cerr << ERROR_INVALID_ARGUMENTS;
 		return 1;
 	}
 
-	std::string fileName = argv[1];
+	std::ifstream fileInput(argv[1]);
+	std::ofstream fileOutput(argv[2]);
 
-	std::ifstream fin(fileName);
-
-	if (!fin.is_open())
+	if (!fileInput.is_open())
 	{
-		std::cout << ERROR_FAILED_OPEN_FILE << std::endl;
+		std::cerr << ERROR_FAILED_OPEN_FILE;
 		return 1;
 	}
 
 	std::string nLine;
-	std::getline(fin, nLine);
+	std::getline(fileInput, nLine);
 	int n = std::stoi(nLine);
 
 	std::string arrLine;
-	std::getline(fin, arrLine);
+	std::getline(fileInput, arrLine);
 	std::vector<int> arr = getArr(arrLine, n);
 
-	CSegmentTree segmentTree(fin, std::cout, n, arr);
+	CSegmentTree segmentTree(fileInput, fileOutput, n, arr);
 	segmentTree.BuildTree(1, 0, n - 1);
 	segmentTree.HandleCommand();
 	segmentTree.PrintInfo();
