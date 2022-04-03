@@ -1,0 +1,8 @@
+3
+1 2 3
+add <index> <value>
+rsq <index_begin> <index_end>
+addint <index_begin> <index_end> <value>
+update <index_begin> <index_end> <value>
+rmq <index_begin> <index_end>
+
