@@ -3,17 +3,14 @@
 #include "CSegmentTree.h"
 #include "Const.h"
 
-std::vector<int> getArr(std::string line, int n)
+std::vector<int> getArr(std::string line, size_t size)
 {
-	std::vector<int> arr;
-
+	std::vector<int> arr(size + 1);
 	std::istringstream ist(line);
-	std::string element;
 
-	for (int i = 0; i < n; i++)
+	for (int i = 1; i <= size; i++)
 	{
-		ist >> element;
-		arr.push_back(std::stoi(element));
+		ist >> arr[i];
 	}
 	return arr;
 }
@@ -37,14 +34,14 @@ int main(int argc, char* argv[])
 
 	std::string nLine;
 	std::getline(fileInput, nLine);
-	int n = std::stoi(nLine);
+	int size = std::stoi(nLine);
 
 	std::string arrLine;
 	std::getline(fileInput, arrLine);
-	std::vector<int> arr = getArr(arrLine, n);
+	std::vector<int> arr = getArr(arrLine, size);
 
-	CSegmentTree segmentTree(fileInput, fileOutput, n, arr);
-	segmentTree.BuildTree(1, 0, n - 1);
+	CSegmentTree segmentTree(fileInput, fileOutput, size, arr);
+	segmentTree.BuildTree(1, 1, size);
 	segmentTree.HandleCommand();
 	segmentTree.PrintInfo();
 

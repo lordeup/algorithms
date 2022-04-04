@@ -1,27 +1,31 @@
 #include "CSegmentTree.h"
 #include "Const.h"
 
-CSegmentTree::CSegmentTree(std::istream& input, std::ostream& output, const int n, const std::vector<int> arr)
+CSegmentTree::CSegmentTree(std::istream& input, std::ostream& output, const size_t size, const std::vector<int>& arr)
 	: m_input(input)
 	, m_output(output)
-	, m_count(n)
+	, m_count(size)
 	, m_array(arr)
 {
+	m_tree.resize(4 * m_count);
 }
 
 
-void CSegmentTree::BuildTree(int v, int l, int r)
+void CSegmentTree::BuildTree(int root, int left, int right)
 {
-	if (l == r) 
+	if (left == right)
 	{
-		m_tree[v] = m_array[l];    //сумма отрезка из одного элемента равна этому элементу
+		m_tree[root] = m_array[left];    //сумма отрезка из одного элемента равна этому элементу
 	}
 	else
 	{
-		int mid = l + (r - l) / 2;
-		CSegmentTree::BuildTree(v * 2 + 1, l, mid);
-		CSegmentTree::BuildTree(v * 2 + 2, mid + 1, r);
-		m_tree[v] = m_tree[v * 2] + m_tree[v * 2 + 1];
+		int middle = (left + right) / 2;
+		int leftItemIndex = 2 * root;
+		int rightItemIndex = 2 * root + 1;
+
+		BuildTree(leftItemIndex, left, middle);
+		BuildTree(rightItemIndex, middle + 1, right);
+		m_tree[root] = m_tree[leftItemIndex] + m_tree[rightItemIndex];
 	}
 }
 
@@ -67,13 +71,13 @@ void CSegmentTree::PrintInfo() {}
 
 void CSegmentTree::Add(int index, long value) {}
 
-void CSegmentTree::Rsq(int index_begin, int index_end) {}
+void CSegmentTree::Rsq(int indexBegin, int indexEnd) {}
 
-void CSegmentTree::AddInt(int index_begin, int index_end, long value) {}
+void CSegmentTree::AddInt(int indexBegin, int indexEnd, long value) {}
 
-void CSegmentTree::Update(int index_begin, int index_end, long value) {}
+void CSegmentTree::Update(int indexBegin, int indexEnd, long value) {}
 
-void CSegmentTree::Rmq(int index_begin, int index_end) {}
+void CSegmentTree::Rmq(int indexBegin, int indexEnd) {}
 
 
 std::vector<int> CSegmentTree::GetNumbersFromStream(std::istringstream& iss)
