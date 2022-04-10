@@ -2,30 +2,46 @@
 #include <algorithm>
 #include <sstream>
 #include <vector>
+#include "InvalidArgumentError.h"
+
+struct SegmentTreeData
+{
+	long root{};
+	long left{};
+	long right{};
+	long middle{};
+};
 
 class CSegmentTree
 {
 public:
-	CSegmentTree(std::istream& input, std::ostream& output, const size_t size, const std::vector<int>& arr);
+	CSegmentTree(std::istream& input, std::ostream& output, SegmentTreeData& treeData, const std::vector<int>& arr);
 
-	void BuildTree(int root, int left, int right);
+	void BuildTree();
 	void HandleCommand();
 	void PrintInfo();
 
 private:
-	void Add(int index, long value); // прибавление к элементу Ak величины d;
-	void Rsq(int indexBegin, int indexEnd); // нахождение суммы Ai + Ai+1 + Е + Aj;
-	void AddInt(int indexBegin, int indexEnd, long value); // прибавление к каждому из элементов Ai, Ai+1, Е Aj   величины d;
-	void Update(int indexBegin, int indexEnd, long value); // присвоение  каждому  из  элементов  Ai, Ai+1, Е Aj  значени€ v;
-	void Rmq(int indexBegin, int indexEnd); // нахождение минимума из элементов Ai, Ai+1, Е Aj.
-	std::vector<int> GetNumbersFromStream(std::istringstream& iss);
+	void Build(long root, long left, long right);
+
+	void Add(long root, long index, long value, long tLeft, long tRight);
+	void AddInt(long root, long left, long right, long value, long tLeft, long tRight);
+
+	void Update(long root, long left, long right, long value, long tLeft, long tRight);
+
+	long Rsq(long root, long left, long right, long tLeft, long tRight);
+	long Rmq(long root, long left, long right, long tLeft, long tRight);
+
+	std::vector<long> GetNumbersFromStream(std::istringstream& iss);
+
+	SegmentTreeData GetSegmentTreeData(long root, long left, long right);
 
 private:
 	std::istream& m_input;
 	std::ostream& m_output;
 
-	const size_t m_count = 0;
-	std::vector<long long> m_tree;
+	SegmentTreeData& m_treeData;
+	std::vector<long> m_tree;
 	const std::vector<int> m_array;
 };
 

@@ -144,11 +144,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CSegmentTree.cpp" />
+    <ClCompile Include="InvalidArgumentError.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Const.h" />
     <ClInclude Include="CSegmentTree.h" />
+    <ClInclude Include="InvalidArgumentError.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
