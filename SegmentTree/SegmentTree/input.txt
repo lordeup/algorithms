@@ -1,7 +1,5 @@
-7
-2 7 9 4 6 5 8
-add 5 1
-rsq <index_begin> <index_end>
-addint <index_begin> <index_end> <value>
-update <index_begin> <index_end> <value>
-rmq <index_begin> <index_end>
+5
+3 5 1 2 9
+addint 1 4 1
+addint 2 5 4
+addint 3 4 7

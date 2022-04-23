@@ -5,10 +5,10 @@
 
 std::vector<int> GetData(std::string line, size_t size)
 {
-	std::vector<int> arr(size + 1);
+	std::vector<int> arr(size);
 	std::istringstream ist(line);
 
-	for (int i = 1; i <= size; i++)
+	for (int i = 0; i < size; i++)
 	{
 		ist >> arr[i];
 	}
@@ -41,8 +41,8 @@ int main(int argc, char* argv[])
 
 	SegmentTreeData treeData;
 	treeData.root = 1;
-	treeData.left = 1;
-	treeData.right = size;
+	treeData.left = 0;
+	treeData.right = size - 1;
 
 	try
 	{

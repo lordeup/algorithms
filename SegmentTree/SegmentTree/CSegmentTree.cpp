@@ -1,5 +1,6 @@
 #include "CSegmentTree.h"
 #include "Const.h"
+#include <iostream>
 
 CSegmentTree::CSegmentTree(std::istream& input, std::ostream& output, SegmentTreeData& treeData, const std::vector<int>& arr)
 	: m_input(input)
@@ -7,7 +8,9 @@ CSegmentTree::CSegmentTree(std::istream& input, std::ostream& output, SegmentTre
 	, m_treeData(treeData)
 	, m_array(arr)
 {
-	m_tree.resize(4 * (size_t)m_treeData.right);
+	m_tree.resize(4 * m_array.size());
+	m_difference.resize(m_tree.size());
+	m_marked.resize(m_tree.size());
 }
 
 void CSegmentTree::BuildTree()
@@ -38,7 +41,7 @@ void CSegmentTree::HandleCommand()
 				throw InvalidArgumentError(ADD_COMMAND, "<index> <value>");
 			}
 
-			Add(root, numbers[0], numbers[1], tLeft, tRight);
+			Add(root, tLeft, tRight, numbers[0], numbers[1]);
 		}
 		else if (commandName == RSQ_COMMAND)
 		{
@@ -47,7 +50,7 @@ void CSegmentTree::HandleCommand()
 				throw InvalidArgumentError(RSQ_COMMAND, "<index_begin> <index_end>");
 			}
 
-			long result = Rsq(root, numbers[0], numbers[1], tLeft, tRight);
+			long result = Rsq(root, tLeft, tRight, numbers[0], numbers[1]);
 			m_output << result << std::endl;
 		}
 		else if (commandName == ADDINT_COMMAND)
@@ -57,7 +60,7 @@ void CSegmentTree::HandleCommand()
 				throw InvalidArgumentError(ADDINT_COMMAND, "<index_begin> <index_end> <value>");
 			}
 
-			AddInt(root, numbers[0], numbers[1], numbers[2], tLeft, tRight);
+			AddInt(root, tLeft, tRight, numbers[0], numbers[1], numbers[2]);
 		}
 		else if (commandName == UPDATE_COMMAND)
 		{
@@ -66,7 +69,7 @@ void CSegmentTree::HandleCommand()
 				throw InvalidArgumentError(UPDATE_COMMAND, "<index_begin> <index_end> <value>");
 			}
 
-			Update(root, numbers[0], numbers[1], numbers[2], tLeft, tRight);
+			Update(root, tLeft, tRight, numbers[0], numbers[1], numbers[2]);
 		}
 		else if (commandName == RMQ_COMMAND)
 		{
@@ -75,7 +78,7 @@ void CSegmentTree::HandleCommand()
 				throw InvalidArgumentError(RMQ_COMMAND, "<index_begin> <index_end>");
 			}
 
-			long result = Rmq(root, numbers[0], numbers[1], tLeft, tRight);
+			long result = Rmq(root, tLeft, tRight, numbers[0], numbers[1]);
 			m_output << result << std::endl;
 		}
 		else
@@ -83,6 +86,9 @@ void CSegmentTree::HandleCommand()
 			m_output << ERROR_UNKNOWN_COMMAND << std::endl;
 		}
 	}
+
+	// TODO delete
+	int ff = 0;
 }
 
 void CSegmentTree::PrintInfo()
@@ -105,7 +111,7 @@ void CSegmentTree::Build(long root, long left, long right)
 	}
 }
 
-void CSegmentTree::Add(long root, long index, long value, long tLeft, long tRight)
+void CSegmentTree::Add(long root, long tLeft, long tRight, long index, long value)
 {
 	if (tLeft == tRight)
 	{
@@ -114,21 +120,23 @@ void CSegmentTree::Add(long root, long index, long value, long tLeft, long tRigh
 	else
 	{
 		SegmentTreeData segmentTree = GetSegmentTreeData(root, tLeft, tRight);
+		long middle = segmentTree.middle;
 
-		if (index <= segmentTree.middle)
+		if (index <= middle)
 		{
-			Add(segmentTree.left, index, value, tLeft, segmentTree.middle);
+			Add(segmentTree.left, tLeft, middle, index, value);
 		}
 		else
 		{
-			Add(segmentTree.right, index, value, segmentTree.middle + 1, tRight);
+			Add(segmentTree.right, middle + 1, tRight, index, value);
 		}
 
 		m_tree[root] = std::max(m_tree[segmentTree.left], m_tree[segmentTree.right]);
 	}
 }
 
-void CSegmentTree::AddInt(long root, long left, long right, long value, long tLeft, long tRight)
+
+void CSegmentTree::AddInt(long root, long tLeft, long tRight, long left, long right, long value)
 {
 	if (left > right)
 	{
@@ -141,85 +149,94 @@ void CSegmentTree::AddInt(long root, long left, long right, long value, long tLe
 	}
 	else
 	{
-		SegmentTreeData segmentTree = GetSegmentTreeData(root, left, right);
+		SegmentTreeData segmentTree = GetSegmentTreeData(root, tLeft, tRight);
+		long middle = segmentTree.middle;
 
-		AddInt(segmentTree.left, left, std::min(right, segmentTree.middle), value, tLeft, segmentTree.middle);
-		AddInt(segmentTree.right, std::max(left, segmentTree.middle + 1), right, value, segmentTree.middle + 1, tRight);
+		AddInt(segmentTree.left, tLeft, middle, left, std::min(right, middle), value);
+		AddInt(segmentTree.right, middle + 1, tRight, std::max(left, middle + 1), right, value);
 	}
 }
 
-void CSegmentTree::Update(long root, long left, long right, long value, long tLeft, long tRight)
+void CSegmentTree::Update(long root, long tLeft, long tRight, long left, long right, long value)
 {
+	if (left > right)
+	{
+		return;
+	}
+
 	if (left == tLeft && tRight == right)
 	{
-		//m_tree[root] = value;
-	}
-	else
-	{
-		SegmentTreeData segmentTree = GetSegmentTreeData(root, left, right);
-	}
-}
-
-long CSegmentTree::Rsq(long root, long left, long right, long tLeft, long tRight)
-{
-	if (left == tLeft && right == tRight)
-	{
-		return m_tree[root];
+		m_tree[root] = value;
+		m_marked[root] = true;
 	}
 	else
 	{
 		SegmentTreeData segmentTree = GetSegmentTreeData(root, tLeft, tRight);
+		long middle = segmentTree.middle;
 
-		if (right <= segmentTree.middle)
-		{
-			return Rsq(segmentTree.left, left, right, tLeft, segmentTree.middle);
-		}
-		else
-		{
-			if (left > segmentTree.middle)
-			{
-				return Rsq(segmentTree.right, left, right, segmentTree.middle + 1, tRight);
-			}
-			else
-			{
-				long elmentOne = Rsq(segmentTree.left, left, segmentTree.middle, tLeft, segmentTree.middle);
-				long elmentTwo = Rsq(segmentTree.right, segmentTree.middle + 1, right, segmentTree.middle + 1, tRight);
+		PushValue(root);
 
-				return elmentOne + elmentTwo;
-			}
-		}
+		Update(segmentTree.left, tLeft, middle, left, std::min(right, middle), value);
+		Update(segmentTree.right, middle + 1, tRight, std::max(left, middle + 1), right, value);
 	}
 }
 
-long CSegmentTree::Rmq(long root, long left, long right, long tLeft, long tRight)
+void CSegmentTree::PushValue(long root)
 {
+	long leftIndex = GetLeftIndex(root);
+	long rightIndex = GetRightIndex(root);
+
+	if (m_marked[root])
+	{
+		m_tree[leftIndex] = m_tree[rightIndex] = m_tree[root];
+		m_marked[leftIndex] = m_marked[rightIndex] = true;
+		m_marked[root] = false;
+	}
+}
+
+long CSegmentTree::Rsq(long root, long tLeft, long tRight, long left, long right)
+{
+	if (left > right)
+	{
+		return 0;
+	}
+
 	if (left == tLeft && right == tRight)
 	{
 		return m_tree[root];
 	}
-	else
+
+	SegmentTreeData segmentTree = GetSegmentTreeData(root, tLeft, tRight);
+	long middle = segmentTree.middle;
+
+	long elmentOne = Rsq(segmentTree.left, tLeft, middle, left, std::min(right, middle));
+	long elmentTwo = Rsq(segmentTree.right, middle + 1, tRight, std::max(left, middle + 1), right);
+
+	std::cout << elmentOne << std::endl;
+	std::cout << elmentTwo << std::endl;
+
+	return elmentOne + elmentTwo;
+}
+
+long CSegmentTree::Rmq(long root, long tLeft, long tRight, long left, long right)
+{
+	if (left > right)
 	{
-		SegmentTreeData segmentTree = GetSegmentTreeData(root, tLeft, tRight);
-
-		if (right <= segmentTree.middle)
-		{
-			return Rmq(segmentTree.left, left, right, tLeft, segmentTree.middle);
-		}
-		else
-		{
-			if (left > segmentTree.middle)
-			{
-				return Rmq(segmentTree.right, left, right, segmentTree.middle + 1, tRight);
-			}
-			else
-			{
-				long elmentOne = Rmq(segmentTree.left, left, segmentTree.middle, tLeft, segmentTree.middle);
-				long elmentTwo = Rmq(segmentTree.right, segmentTree.middle + 1, right, segmentTree.middle + 1, tRight);
-
-				return std::max(elmentOne, elmentTwo);
-			}
-		}
+		return 0;
 	}
+
+	if (left == tLeft && right == tRight)
+	{
+		return m_tree[root];
+	}
+
+	SegmentTreeData segmentTree = GetSegmentTreeData(root, tLeft, tRight);
+	long middle = segmentTree.middle;
+
+	long elmentOne = Rmq(segmentTree.left, tLeft, middle, left, std::min(right, middle));
+	long elmentTwo = Rmq(segmentTree.right, middle + 1, tRight, std::max(left, middle + 1), right);
+
+	return std::min(elmentOne, elmentTwo);
 }
 
 std::vector<long> CSegmentTree::GetNumbersFromStream(std::istringstream& iss)
@@ -232,9 +249,21 @@ std::vector<long> CSegmentTree::GetNumbersFromStream(std::istringstream& iss)
 SegmentTreeData CSegmentTree::GetSegmentTreeData(long root, long left, long right)
 {
 	SegmentTreeData treeData;
+
+	treeData.root = root;
 	treeData.middle = (left + right) / 2;
-	treeData.left = 2 * root;
-	treeData.right = 2 * root + 1;
+	treeData.left = GetLeftIndex(root);
+	treeData.right = GetRightIndex(root);
 
 	return treeData;
+}
+
+long CSegmentTree::GetLeftIndex(long root)
+{
+	return 2 * root;
+}
+
+long CSegmentTree::GetRightIndex(long root)
+{
+	return 2 * root + 1;
 }
