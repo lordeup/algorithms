@@ -50,6 +50,8 @@ private:
 	// TODO delete
 	std::vector<long> m_difference;
 
+	std::vector<std::string> m_logger;
+
 	std::vector<bool> m_marked;
 	const std::vector<int> m_array;
 };

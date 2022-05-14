@@ -1,0 +1,5 @@
+rsq 0 4 20
+addint 1 4 3
+rsq 0 4 32
+addint 2 4 4
+addint 3 4 7

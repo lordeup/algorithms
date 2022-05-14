@@ -34,6 +34,8 @@ void CSegmentTree::HandleCommand()
 		std::vector<long> numbers = GetNumbersFromStream(ist);
 		size_t size = numbers.size();
 
+		std::string log = commandLine;
+
 		if (commandName == ADD_COMMAND)
 		{
 			if (size < 2)
@@ -51,7 +53,8 @@ void CSegmentTree::HandleCommand()
 			}
 
 			long result = Rsq(root, tLeft, tRight, numbers[0], numbers[1]);
-			m_output << result << std::endl;
+			log.append(" " + std::to_string(result));
+			// m_output << result << std::endl;
 		}
 		else if (commandName == ADDINT_COMMAND)
 		{
@@ -79,12 +82,14 @@ void CSegmentTree::HandleCommand()
 			}
 
 			long result = Rmq(root, tLeft, tRight, numbers[0], numbers[1]);
-			m_output << result << std::endl;
+			log += result;
+			//m_output << result << std::endl;
 		}
 		else
 		{
 			m_output << ERROR_UNKNOWN_COMMAND << std::endl;
 		}
+		m_logger.push_back(log);
 	}
 
 	// TODO delete
@@ -93,6 +98,9 @@ void CSegmentTree::HandleCommand()
 
 void CSegmentTree::PrintInfo()
 {
+	for (std::string log : m_logger) {
+		m_output << log << std::endl;
+	}
 }
 
 void CSegmentTree::Build(long root, long left, long right)
@@ -131,30 +139,37 @@ void CSegmentTree::Add(long root, long tLeft, long tRight, long index, long valu
 			Add(segmentTree.right, middle + 1, tRight, index, value);
 		}
 
-		m_tree[root] = std::max(m_tree[segmentTree.left], m_tree[segmentTree.right]);
+		m_tree[root] = m_tree[segmentTree.left] + m_tree[segmentTree.right];
 	}
 }
 
 
 void CSegmentTree::AddInt(long root, long tLeft, long tRight, long left, long right, long value)
 {
-	if (left > right)
-	{
-		return;
-	}
-
 	if (left == tLeft && tRight == right)
 	{
-		m_tree[root] += value;
+		//m_tree[root] += value;
 	}
 	else
 	{
 		SegmentTreeData segmentTree = GetSegmentTreeData(root, tLeft, tRight);
 		long middle = segmentTree.middle;
 
-		AddInt(segmentTree.left, tLeft, middle, left, std::min(right, middle), value);
-		AddInt(segmentTree.right, middle + 1, tRight, std::max(left, middle + 1), right, value);
+		if (right <= middle)
+		{
+			AddInt(segmentTree.left, tLeft, middle, left, right, value);
+		}
+		else if (left > middle)
+		{
+			AddInt(segmentTree.right, middle + 1, tRight, left, right, value);
+		} 
+		else
+		{
+			AddInt(segmentTree.left, tLeft, middle, left, middle, value);
+			AddInt(segmentTree.right, middle + 1, tRight, middle + 1, right, value);
+		}
 	}
+	m_tree[root] += value * (right - left + 1);
 }
 
 void CSegmentTree::Update(long root, long tLeft, long tRight, long left, long right, long value)
@@ -212,8 +227,8 @@ long CSegmentTree::Rsq(long root, long tLeft, long tRight, long left, long right
 	long elmentOne = Rsq(segmentTree.left, tLeft, middle, left, std::min(right, middle));
 	long elmentTwo = Rsq(segmentTree.right, middle + 1, tRight, std::max(left, middle + 1), right);
 
-	std::cout << elmentOne << std::endl;
-	std::cout << elmentTwo << std::endl;
+	//std::cout << elmentOne << std::endl;
+	//std::cout << elmentTwo << std::endl;
 
 	return elmentOne + elmentTwo;
 }

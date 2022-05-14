@@ -1,5 +1,7 @@
 5
 3 5 1 2 9
-addint 1 4 1
-addint 2 5 4
+rsq 0 4
+addint 1 4 3
+rsq 0 4
+addint 2 4 4
 addint 3 4 7
