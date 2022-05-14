@@ -1,14 +1,40 @@
-﻿#include <iostream>
+﻿/*
+	Дерево отрезков
+
+	Задан массив целых чисел A0, A1, …, AN-1. Требуется построить по нему дерево отрезков и реализовать следующие операции:
+	Add(k, d) - прибавление к элементу Ak величины d;
+	Rsq(i, j) – нахождение суммы Ai + Ai+1 + … + Aj;
+	AddInt(i, j, d) - прибавление к каждому из элементов Ai, Ai+1, … Aj   величины d;
+	Update (i, j, v) – присвоение  каждому  из  элементов  Ai, Ai+1, … Aj  значения v;
+	Rmq(i, j) – нахождение минимума из элементов Ai, Ai+1, … Aj.
+	Ввод из файла INPUT.TXT. В первой строке задается N. Во второй строке содержатся элементы массива A0, A1, …, AN-1. Далее следуют команды Add(k, d) и Rsq(i, j) по одной в строке. 
+	
+	Формат команд:
+	add <index> <value>
+	rsq <index_begin> <index_end>
+	addint <index_begin> <index_end> <value>
+	update <index_begin> <index_end> <value>
+	rmq <index_begin> <index_end>
+	
+	Вывод в файл OUTPUT.TXT. Команды Add, AddInt и Update должны просто выводиться в выходной поток, а результат команд Rsq и Rmq должен отображаться в виде:
+	rsq <index_begin> <index_end> <result> или
+	rmq <index_begin> <index_end> <result>.
+	Примечание. Дерево отрезков строится либо по сумме, либо по минимуму. Должна быть реализована одна из операций AddInt или Update. 
+	На тесте из n = 105 чисел и n = 105 команд программа должна работать почти мгновенно, так как сложность вычислений имеет оценку O(n log n).
+*/
+
+
+#include <iostream>
 #include <fstream>
 #include "CSegmentTree.h"
 #include "Const.h"
 
 std::vector<int> GetData(std::string line, size_t size)
 {
-	std::vector<int> arr(size);
+	std::vector<int> arr(size + 1);
 	std::istringstream ist(line);
 
-	for (int i = 0; i < size; i++)
+	for (int i = 1; i <= size; i++)
 	{
 		ist >> arr[i];
 	}
@@ -41,12 +67,12 @@ int main(int argc, char* argv[])
 
 	SegmentTreeData treeData;
 	treeData.root = 1;
-	treeData.left = 0;
-	treeData.right = size - 1;
+	treeData.left = 1;
+	treeData.right = size;
 
 	try
 	{
-		CSegmentTree segmentTree(fileInput, fileOutput, treeData, data);
+		CSegmentTree segmentTree(fileInput, std::cout, treeData, data);
 		segmentTree.BuildTree();
 		segmentTree.HandleCommand();
 		segmentTree.PrintInfo();

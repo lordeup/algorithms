@@ -47,9 +47,6 @@ private:
 	SegmentTreeData& m_treeData;
 	std::vector<long> m_tree;
 
-	// TODO delete
-	std::vector<long> m_difference;
-
 	std::vector<std::string> m_logger;
 
 	std::vector<bool> m_marked;

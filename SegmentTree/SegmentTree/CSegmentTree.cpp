@@ -9,7 +9,6 @@ CSegmentTree::CSegmentTree(std::istream& input, std::ostream& output, SegmentTre
 	, m_array(arr)
 {
 	m_tree.resize(4 * m_array.size());
-	m_difference.resize(m_tree.size());
 	m_marked.resize(m_tree.size());
 }
 
@@ -54,7 +53,6 @@ void CSegmentTree::HandleCommand()
 
 			long result = Rsq(root, tLeft, tRight, numbers[0], numbers[1]);
 			log.append(" " + std::to_string(result));
-			// m_output << result << std::endl;
 		}
 		else if (commandName == ADDINT_COMMAND)
 		{
@@ -82,8 +80,7 @@ void CSegmentTree::HandleCommand()
 			}
 
 			long result = Rmq(root, tLeft, tRight, numbers[0], numbers[1]);
-			log += result;
-			//m_output << result << std::endl;
+			log.append(" " + std::to_string(result));
 		}
 		else
 		{
@@ -91,14 +88,12 @@ void CSegmentTree::HandleCommand()
 		}
 		m_logger.push_back(log);
 	}
-
-	// TODO delete
-	int ff = 0;
 }
 
 void CSegmentTree::PrintInfo()
 {
-	for (std::string log : m_logger) {
+	for (std::string log : m_logger) 
+	{
 		m_output << log << std::endl;
 	}
 }
@@ -148,7 +143,6 @@ void CSegmentTree::AddInt(long root, long tLeft, long tRight, long left, long ri
 {
 	if (left == tLeft && tRight == right)
 	{
-		//m_tree[root] += value;
 	}
 	else
 	{
@@ -162,13 +156,14 @@ void CSegmentTree::AddInt(long root, long tLeft, long tRight, long left, long ri
 		else if (left > middle)
 		{
 			AddInt(segmentTree.right, middle + 1, tRight, left, right, value);
-		} 
+		}
 		else
 		{
 			AddInt(segmentTree.left, tLeft, middle, left, middle, value);
 			AddInt(segmentTree.right, middle + 1, tRight, middle + 1, right, value);
 		}
 	}
+	
 	m_tree[root] += value * (right - left + 1);
 }
 
@@ -226,9 +221,6 @@ long CSegmentTree::Rsq(long root, long tLeft, long tRight, long left, long right
 
 	long elmentOne = Rsq(segmentTree.left, tLeft, middle, left, std::min(right, middle));
 	long elmentTwo = Rsq(segmentTree.right, middle + 1, tRight, std::max(left, middle + 1), right);
-
-	//std::cout << elmentOne << std::endl;
-	//std::cout << elmentTwo << std::endl;
 
 	return elmentOne + elmentTwo;
 }

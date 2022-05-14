@@ -1,0 +1,9 @@
+5
+3 5 1 2 9
+rsq 1 5
+update 1 4 1
+rsq 1 5
+update 2 5 4
+rsq 1 5
+update 3 4 7
+rsq 1 5
