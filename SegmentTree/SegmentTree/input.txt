@@ -1,5 +1,6 @@
 5
 3 5 1 2 9
+rmq 1 2
 rsq 1 5
 addint 1 4 1
 rsq 1 5

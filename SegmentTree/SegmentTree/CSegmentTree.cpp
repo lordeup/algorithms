@@ -227,12 +227,12 @@ long CSegmentTree::Rsq(long root, long tLeft, long tRight, long left, long right
 
 long CSegmentTree::Rmq(long root, long tLeft, long tRight, long left, long right)
 {
-	if (left > right)
+	if (left > tRight || tLeft > right)
 	{
-		return 0;
+		return INT_MAX;
 	}
 
-	if (left == tLeft && right == tRight)
+	if (tLeft >= left && tRight <= right)
 	{
 		return m_tree[root];
 	}
@@ -240,8 +240,8 @@ long CSegmentTree::Rmq(long root, long tLeft, long tRight, long left, long right
 	SegmentTreeData segmentTree = GetSegmentTreeData(root, tLeft, tRight);
 	long middle = segmentTree.middle;
 
-	long elmentOne = Rmq(segmentTree.left, tLeft, middle, left, std::min(right, middle));
-	long elmentTwo = Rmq(segmentTree.right, middle + 1, tRight, std::max(left, middle + 1), right);
+	long elmentOne = Rmq(segmentTree.left, tLeft, middle, left, right);
+	long elmentTwo = Rmq(segmentTree.right, middle + 1, tRight, left, right);
 
 	return std::min(elmentOne, elmentTwo);
 }
