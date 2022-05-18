@@ -26,6 +26,7 @@ public:
 private:
 	void FillingData();
 	void BreadthFirstSearch(Graph& graph, int start, int finish);
+	void PrintInfo(int value);
 
 private:
 	std::istream& m_input;
@@ -33,4 +34,7 @@ private:
 
 	Data m_data;
 	Graph m_graph;
+
+	std::vector<int> m_weightsDistances;
+	std::vector<int> m_parents;
 };

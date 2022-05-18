@@ -10,6 +10,10 @@ void CMaximumPath::ProcessingCommand()
 {
 	FillingData();
 	BreadthFirstSearch(m_graph, m_data.start, m_data.finish);
+
+	m_output << m_weightsDistances[m_data.finish] << std::endl;
+
+	PrintInfo(m_data.finish);
 }
 
 void CMaximumPath::FillingData()
@@ -29,42 +33,96 @@ void CMaximumPath::FillingData()
 void CMaximumPath::BreadthFirstSearch(Graph& graph, int start, int finish)
 {
 	const int initialValue = -1;
-	std::vector<int> distances(graph.size(), initialValue);
-	std::vector<int> paths(graph.size(), initialValue);
+
+	m_weightsDistances.assign(graph.size(), initialValue);
+	m_parents.assign(graph.size(), initialValue);
+
+	std::vector<bool> inque(graph.size(), false);
+
 	std::queue<int> queueEdge;
+	//std::vector<std::queue<int>> queues(graph.size());
 
 	queueEdge.push(start);
-	distances[start] = 0;
+	//queues[0].push(start);
+	m_weightsDistances[start] = 0;
+	m_parents[start] = start;
+	inque[start] = true;
 
 	while (!queueEdge.empty())
 	{
 		int vertex = queueEdge.front();
 		queueEdge.pop();
+		inque[vertex] = false;
 
-		for (auto& item: graph[vertex])
+		for (auto& item : graph[vertex])
 		{
 			int endEdge = item.first;
 			int weight = item.second;
+			int newDistance = std::max(m_weightsDistances[endEdge], m_weightsDistances[vertex] + weight);
+			//int newDistance = weightsDistances[vertex] + weight;
 
-			if (distances[endEdge] == initialValue)
+			if (m_weightsDistances[endEdge] < newDistance)
 			{
-				distances[endEdge] = distances[vertex] + 1;
-				paths[endEdge] = vertex;
-				queueEdge.push(endEdge);
+				m_parents[endEdge] = vertex;
+				m_weightsDistances[endEdge] = newDistance;
+
+				if (!inque[endEdge])
+				{
+					queueEdge.push(endEdge);
+					inque[endEdge] = true;
+				}
 			}
 		}
 	}
 
-	std::vector<int> ans;
-	int curr = finish;
-	while (curr != -1)
-	{
-		ans.push_back(curr);
-		curr = paths[curr];
-	}
+	//std::vector<int> ans;
+	//int curr = finish;
+	//while (curr != -1)
+	//{
+	//	ans.push_back(curr);
+	//	curr = parents[curr];
+	//}
 
-	reverse(ans.begin(), ans.end());
+	//reverse(ans.begin(), ans.end());
+
+	//for (size_t i = 0; i < graph.size(); ++i)
+	//{
+	//	while (!queues[i].empty())
+	//	{
+	//		int vertex = queues[i].front();
+	//		queues[i].pop();
+
+	//		if (weightsDistances[vertex] > i)
+	//		{
+	//			continue;
+	//		}
+	//			
+	//		for (auto& item : graph[vertex])
+	//		{
+	//			int endEdge = item.first;
+	//			int newDistance = std::max(weightsDistances[endEdge], weightsDistances[vertex] + item.second);
+
+	//			if (weightsDistances[endEdge] < newDistance)
+	//			{
+	//				weightsDistances[endEdge] = newDistance;
+	//				// TODO
+	//				int h = weightsDistances[endEdge];
+	//				queues[endEdge].push(endEdge);
+	//			}
+	//		}
+	//	}
+	//}
 
 
 	int g = 0;
+}
+
+void CMaximumPath::PrintInfo(int value)
+{
+	if (m_parents[value] != value) 
+	{
+		PrintInfo(m_parents[value]);
+	}
+	m_output << value << ' ';
+	//m_output << "No" << std::endl;
 }
