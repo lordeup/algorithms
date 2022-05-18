@@ -1,12 +1,14 @@
 ﻿#pragma once
 #include <algorithm>
-#include <queue>
+#include <deque>
 #include <sstream>
 #include <vector>
 #include "Const.h"
 
 using Edge = std::pair<int, int>;
 using Graph = std::vector<std::vector<Edge>>;
+
+const int EMPTY_VALUE = -1;
 
 struct Data
 {
@@ -25,8 +27,9 @@ public:
 
 private:
 	void FillingData();
-	void BreadthFirstSearch(Graph& graph, int start, int finish);
-	void PrintInfo(int value);
+	void BreadthFirstSearch(Graph& graph, int start);
+	void PrintInfo();
+	std::vector<int> GetPaths(const std::vector<int>& data, int value);
 
 private:
 	std::istream& m_input;
