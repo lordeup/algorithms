@@ -39,6 +39,6 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 
-	CMaximumPath maximumPath(fileInput, fileOutput);
+	CMaximumPath maximumPath(fileInput, std::cout);
 	maximumPath.ProcessingCommand();
 }
