@@ -10,3 +10,5 @@ addint 1 5 3
 rsq 1 5
 add 1 1
 rsq 1 5
+addint 1 5 3
+rsq 1 5

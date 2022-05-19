@@ -7,3 +7,6 @@ update 2 5 4
 rsq 1 5
 update 3 4 7
 rsq 1 5
+rsq 1 2
+rsq 3 5
+rmq 1 5

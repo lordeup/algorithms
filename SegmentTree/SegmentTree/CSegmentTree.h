@@ -32,6 +32,10 @@ private:
 	long Rsq(long root, long tLeft, long tRight, long left, long right);
 	long Rmq(long root, long tLeft, long tRight, long left, long right);
 
+	long RsqAdd(long root, long tLeft, long tRight, long left, long right);
+	long RsqAddInt(long root, long tLeft, long tRight, long left, long right);
+	long RsqUpdate(long root, long tLeft, long tRight, long left, long right);
+
 	std::vector<long> GetNumbersFromStream(std::istringstream& iss);
 
 	void PushValue(long root);
@@ -40,12 +44,18 @@ private:
 	long GetLeftIndex(long root);
 	long GetRightIndex(long root);
 
+	void SetLastCommand(std::string command);
+
 private:
 	std::istream& m_input;
 	std::ostream& m_output;
 
 	SegmentTreeData& m_treeData;
 	std::vector<long> m_tree;
+	std::vector<long> m_add;
+	std::vector<long> m_val;
+
+	std:: string m_last_command;
 
 	std::vector<std::string> m_logger;
 
