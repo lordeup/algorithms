@@ -72,7 +72,7 @@ int main(int argc, char* argv[])
 
 	try
 	{
-		CSegmentTree segmentTree(fileInput, std::cout, treeData, data);
+		CSegmentTree segmentTree(fileInput, fileOutput, treeData, data);
 		segmentTree.BuildTree();
 		segmentTree.HandleCommand();
 		segmentTree.PrintInfo();
