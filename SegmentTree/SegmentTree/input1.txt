@@ -1,11 +1,21 @@
 5
 3 5 1 2 9
 rsq 1 5
-update 1 4 1
+addint 1 4 1
 rsq 1 5
-update 2 5 4
+addint 2 5 -2
 rsq 1 5
-update 3 4 7
+addint 1 5 3
 rsq 1 5
-rsq 1 2
-rsq 3 5
+add 2 -2
+rsq 1 5
+addint 1 5 3
+rsq 1 5
+addint 4 5 2
+rsq 1 5
+addint 2 5 3
+rsq 1 5
+add 4 -5
+rsq 1 5
+addint 1 3 2
+rsq 1 5

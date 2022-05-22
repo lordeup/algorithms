@@ -96,21 +96,23 @@ void CSegmentTree::Build(long root, long left, long right)
 
 void CSegmentTree::Add(long root, long tLeft, long tRight, long index, long value)
 {
-	m_tree[root] += value;
-	if (tLeft + 1 < tRight)
+	if (index < tLeft || tRight < index)
 	{
-		SegmentTreeData segmentTree = GetSegmentTreeData(root, tLeft, tRight);
-		long middle = segmentTree.middle;
-
-		if (index < middle)
-		{
-			Add(segmentTree.left, tLeft, middle, index, value);
-		}
-		else
-		{
-			Add(segmentTree.right, middle, tRight, index, value);
-		}
+		return;
 	}
+
+	m_tree[root] += value;
+
+	if (tLeft == tRight)
+	{
+		return;
+	}
+
+	SegmentTreeData segmentTree = GetSegmentTreeData(root, tLeft, tRight);
+	long middle = segmentTree.middle;
+
+	Add(segmentTree.left, tLeft, middle, index, value);
+	Add(segmentTree.right, middle + 1, tRight, index, value);
 }
 
 
