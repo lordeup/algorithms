@@ -8,3 +8,4 @@ const std::string ADDINT_COMMAND = "addint";
 const std::string ERROR_INVALID_ARGUMENTS = "Invalid arguments count\nUsage: SegmentTree.exe <input file name> <output file name>\n";
 const std::string ERROR_FAILED_OPEN_FILE = "Failed to open for reading\n";
 const std::string ERROR_UNKNOWN_COMMAND = "Unknown command";
+const std::string ERROR_INVALID_ARGUMENTS_TEST = "Invalid arguments count\nUsage: TestGenerator.exe <file name> <tree size> <command count> ??<maxNumberValue>\n";

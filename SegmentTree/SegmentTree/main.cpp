@@ -29,9 +29,9 @@
 #include "CSegmentTree.h"
 #include "Const.h"
 
-std::vector<int> GetData(std::string line, size_t size)
+std::vector<long long> GetData(std::string line, size_t size)
 {
-	std::vector<int> arr(size + 1);
+	std::vector<long long> arr(size + 1);
 	std::istringstream ist(line);
 
 	for (int i = 1; i <= size; i++)
@@ -60,10 +60,10 @@ int main(int argc, char* argv[])
 
 	std::string nLine, arrLine;
 	std::getline(fileInput, nLine);
-	int size = std::stoi(nLine);
+	long long size = std::stoi(nLine);
 
 	std::getline(fileInput, arrLine);
-	std::vector<int> data = GetData(arrLine, size);
+	std::vector<long long> data = GetData(arrLine, size);
 
 	SegmentTreeData treeData;
 	treeData.root = 1;
